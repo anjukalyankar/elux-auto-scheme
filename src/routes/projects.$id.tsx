@@ -42,7 +42,7 @@ function ProjectDetail() {
 
   function downloadCsv() {
     if (!bom) return;
-    const blob = new Blob([bomToCsv(bom)], { type: "text/csv" });
+    const blob = new Blob([bomToCsv(bom, Object.keys(bom.lines[0] ?? { item: "" }))], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -113,13 +113,13 @@ function ProjectDetail() {
 
           {tab === "Validation" && validation ? (
             <div className="space-y-2">
-              {(validation.issues ?? []).map((issue, i) => (
+              {[...validation.bom, ...validation.schematic].map((issue, i) => (
                 <div key={i} className="rounded-sm border bg-card px-3 py-2 text-sm">
                   <span className="font-mono text-xs uppercase text-muted-foreground">{issue.severity}</span>{" "}
                   {issue.message}
                 </div>
               ))}
-              {(validation.issues ?? []).length === 0 ? (
+              {validation.bom.length + validation.schematic.length === 0 ? (
                 <p className="text-sm text-muted-foreground">No validation issues. Design is approvable.</p>
               ) : null}
             </div>
