@@ -11,6 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ExtensionPanelRouteImport } from './routes/extension-panel'
+import { Route as MaterialsRouteImport } from './routes/materials'
+import { Route as NewDesignRouteImport } from './routes/new-design'
+import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as RulesRouteImport } from './routes/rules'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SymbolsRouteImport } from './routes/symbols'
+import { Route as ProjectsIdRouteImport } from './routes/projects.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +30,133 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExtensionPanelRoute = ExtensionPanelRouteImport.update({
+  id: '/extension-panel',
+  path: '/extension-panel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MaterialsRoute = MaterialsRouteImport.update({
+  id: '/materials',
+  path: '/materials',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewDesignRoute = NewDesignRouteImport.update({
+  id: '/new-design',
+  path: '/new-design',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulesRoute = RulesRouteImport.update({
+  id: '/rules',
+  path: '/rules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SymbolsRoute = SymbolsRouteImport.update({
+  id: '/symbols',
+  path: '/symbols',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsIdRoute = ProjectsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ProjectsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/extension-panel': typeof ExtensionPanelRoute
+  '/materials': typeof MaterialsRoute
+  '/new-design': typeof NewDesignRoute
+  '/projects': typeof ProjectsRouteWithChildren
+  '/rules': typeof RulesRoute
+  '/settings': typeof SettingsRoute
+  '/symbols': typeof SymbolsRoute
+  '/projects/$id': typeof ProjectsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/extension-panel': typeof ExtensionPanelRoute
+  '/materials': typeof MaterialsRoute
+  '/new-design': typeof NewDesignRoute
+  '/projects': typeof ProjectsRouteWithChildren
+  '/rules': typeof RulesRoute
+  '/settings': typeof SettingsRoute
+  '/symbols': typeof SymbolsRoute
+  '/projects/$id': typeof ProjectsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/extension-panel': typeof ExtensionPanelRoute
+  '/materials': typeof MaterialsRoute
+  '/new-design': typeof NewDesignRoute
+  '/projects': typeof ProjectsRouteWithChildren
+  '/rules': typeof RulesRoute
+  '/settings': typeof SettingsRoute
+  '/symbols': typeof SymbolsRoute
+  '/projects/$id': typeof ProjectsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/extension-panel'
+    | '/materials'
+    | '/new-design'
+    | '/projects'
+    | '/rules'
+    | '/settings'
+    | '/symbols'
+    | '/projects/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth'
-  id: '__root__' | '/' | '/auth'
+  to:
+    | '/'
+    | '/auth'
+    | '/extension-panel'
+    | '/materials'
+    | '/new-design'
+    | '/projects'
+    | '/rules'
+    | '/settings'
+    | '/symbols'
+    | '/projects/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/extension-panel'
+    | '/materials'
+    | '/new-design'
+    | '/projects'
+    | '/rules'
+    | '/settings'
+    | '/symbols'
+    | '/projects/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
+  ExtensionPanelRoute: typeof ExtensionPanelRoute
+  MaterialsRoute: typeof MaterialsRoute
+  NewDesignRoute: typeof NewDesignRoute
+  ProjectsRoute: typeof ProjectsRouteWithChildren
+  RulesRoute: typeof RulesRoute
+  SettingsRoute: typeof SettingsRoute
+  SymbolsRoute: typeof SymbolsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +175,87 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/extension-panel': {
+      id: '/extension-panel'
+      path: '/extension-panel'
+      fullPath: '/extension-panel'
+      preLoaderRoute: typeof ExtensionPanelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/materials': {
+      id: '/materials'
+      path: '/materials'
+      fullPath: '/materials'
+      preLoaderRoute: typeof MaterialsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/new-design': {
+      id: '/new-design'
+      path: '/new-design'
+      fullPath: '/new-design'
+      preLoaderRoute: typeof NewDesignRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rules': {
+      id: '/rules'
+      path: '/rules'
+      fullPath: '/rules'
+      preLoaderRoute: typeof RulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/symbols': {
+      id: '/symbols'
+      path: '/symbols'
+      fullPath: '/symbols'
+      preLoaderRoute: typeof SymbolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$id': {
+      id: '/projects/$id'
+      path: '/$id'
+      fullPath: '/projects/$id'
+      preLoaderRoute: typeof ProjectsIdRouteImport
+      parentRoute: typeof ProjectsRoute
+    }
   }
 }
+
+interface ProjectsRouteChildren {
+  ProjectsIdRoute: typeof ProjectsIdRoute
+}
+
+const ProjectsRouteChildren: ProjectsRouteChildren = {
+  ProjectsIdRoute: ProjectsIdRoute,
+}
+
+const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
+  ProjectsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
+  ExtensionPanelRoute: ExtensionPanelRoute,
+  MaterialsRoute: MaterialsRoute,
+  NewDesignRoute: NewDesignRoute,
+  ProjectsRoute: ProjectsRouteWithChildren,
+  RulesRoute: RulesRoute,
+  SettingsRoute: SettingsRoute,
+  SymbolsRoute: SymbolsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
