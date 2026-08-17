@@ -121,6 +121,15 @@ export function selectMaterial(
     }
   }
 
+  if (selector.unique && pool.length > 1) {
+    return {
+      material: null,
+      reason: `ENGINEER REVIEW REQUIRED: ${pool.length} materials match this specification (${pool
+        .map((m) => m.material_code)
+        .join(", ")}). Selection is ambiguous.`,
+    };
+  }
+
   if (selector.sortBy) {
     const key = selector.sortBy;
     pool = [...pool].sort((a, b) => Number(a.attributes?.[key] ?? 0) - Number(b.attributes?.[key] ?? 0));
@@ -128,6 +137,7 @@ export function selectMaterial(
 
   return { material: pool[0] ?? null, reason: pool[0] ? "" : "No matching material" };
 }
+
 
 /* -------- engine -------- */
 
