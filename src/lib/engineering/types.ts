@@ -30,15 +30,25 @@ export interface FeederInputs {
   earthFaultSource: string;
   residualVoltageSource: string;
 
-  // Instrument transformers
+  // Instrument transformers — ENGINEERING INPUTS (project data, not material master records)
   phaseCtPrimary: number | null;
   phaseCtSecondary: number | null;
   phaseCtClass: string;
   phaseCtVa: number | null;
   phaseCtQuantity: number | null;
+  /** Knee point voltage (V) — required for PS-class / differential cores. */
+  phaseCtVk?: number | null;
+  /** Secondary winding resistance (ohm) — required for PS-class cores. */
+  phaseCtRct?: number | null;
   cbctPrimary: number | null;
   cbctSecondary: number | null;
+  cbctClass?: string;
+  cbctVa?: number | null;
   vtRatio: string;
+  vtClass?: string;
+  vtVa?: number | null;
+  vtFrequencyHz?: number | null;
+
 
   // Relay
   relayMaterialCode: string;
