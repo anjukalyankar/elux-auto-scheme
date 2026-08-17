@@ -17,6 +17,16 @@ export function validateBom(model: EngineeringModel, bom: Bom): Issue[] {
     issues.push({ severity, code, message, source });
 
   for (const c of model.components) {
+    if (c.engineered) {
+      // CT / CBCT / VT are project-engineered items: they carry a specification, not a material code.
+      if (c.unresolved) {
+        push("ERROR", "ENGINEERING_INPUT_REQUIRED", `${c.tag} (${c.function}): ${c.unresolved}`, c.ruleCode);
+      }
+      if (!Number.isFinite(c.quantity) || c.quantity <= 0) {
+        push("ERROR", "INVALID_QUANTITY", `${c.tag}: invalid quantity ${c.quantity}.`, c.ruleCode);
+      }
+      continue;
+    }
     if (!c.materialCode) {
       push("ERROR", "MISSING_MATERIAL", `${c.tag} (${c.function}): no material resolved. ${c.unresolved ?? ""}`.trim(), c.ruleCode);
     }
@@ -33,6 +43,7 @@ export function validateBom(model: EngineeringModel, bom: Bom): Issue[] {
       push("WARNING", "MISSING_TERMINAL_TEMPLATE", `${c.materialCode} has no terminal template assigned.`, c.ruleCode);
     }
   }
+
 
   // duplicate tags
   const tags = new Map<string, number>();

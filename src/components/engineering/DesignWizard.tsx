@@ -478,10 +478,67 @@ export function DesignWizard({ module }: { module: "NEW_DESIGN" | "EXTENSION" })
               <option value="5">5 A</option>
             </select>
           </Field>
-          <Field label="VT ratio">
-            <Input value={inputs.vtRatio} onChange={(e) => set("vtRatio", e.target.value)} />
+          <Field label="Phase CT knee point Vk (V) — PS class">
+            <Input
+              type="number"
+              value={inputs.phaseCtVk ?? ""}
+              onChange={(e) => set("phaseCtVk", e.target.value === "" ? null : Number(e.target.value))}
+            />
           </Field>
+          <Field label="Phase CT Rct (ohm) — PS class">
+            <Input
+              type="number"
+              step="0.01"
+              value={inputs.phaseCtRct ?? ""}
+              onChange={(e) => set("phaseCtRct", e.target.value === "" ? null : Number(e.target.value))}
+            />
+          </Field>
+          <Field label="CBCT class">
+            <Input value={inputs.cbctClass ?? ""} onChange={(e) => set("cbctClass", e.target.value)} />
+          </Field>
+          <Field label="CBCT burden (VA)">
+            <Input
+              type="number"
+              value={inputs.cbctVa ?? ""}
+              onChange={(e) => set("cbctVa", e.target.value === "" ? null : Number(e.target.value))}
+            />
+          </Field>
+          <Field label="VT / PT ratio">
+            <Input
+              placeholder="e.g. 6600/110 V"
+              value={inputs.vtRatio}
+              onChange={(e) => set("vtRatio", e.target.value)}
+            />
+          </Field>
+          <Field label="VT / PT class">
+            <Input value={inputs.vtClass ?? ""} onChange={(e) => set("vtClass", e.target.value)} />
+          </Field>
+          <Field label="VT / PT burden (VA)">
+            <Input
+              type="number"
+              value={inputs.vtVa ?? ""}
+              onChange={(e) => set("vtVa", e.target.value === "" ? null : Number(e.target.value))}
+            />
+          </Field>
+          <Field label="VT / PT frequency (Hz)">
+            <Input
+              type="number"
+              value={inputs.vtFrequencyHz ?? ""}
+              onChange={(e) => set("vtFrequencyHz", e.target.value === "" ? null : Number(e.target.value))}
+            />
+          </Field>
+          {missingIt.length > 0 ? (
+            <div className="sm:col-span-2 xl:col-span-3 rounded-sm border border-destructive/40 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+              Engineering input required before generation:
+              <ul className="mt-1 list-disc pl-5">
+                {missingIt.map((m) => (
+                  <li key={m}>{m}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </Section>
+
 
         <Section title="Step 5 · Relay selection">
           <div className="sm:col-span-2 xl:col-span-3">

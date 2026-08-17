@@ -5,7 +5,9 @@ export function generateBom(model: EngineeringModel): Bom {
   const map = new Map<string, BomLine>();
 
   for (const c of model.components) {
-    const key = c.materialCode ?? `UNRESOLVED:${c.tag}`;
+    const key = c.engineered
+      ? `ENGINEERED:${c.tag}:${c.description}`
+      : (c.materialCode ?? `UNRESOLVED:${c.tag}`);
     const existing = map.get(key);
     if (existing) {
       existing.quantity += c.quantity;
@@ -13,7 +15,7 @@ export function generateBom(model: EngineeringModel): Bom {
       existing.tags.push(c.tag);
     } else {
       map.set(key, {
-        materialCode: c.materialCode ?? "NOT RESOLVED",
+        materialCode: c.engineered ? "ENGINEERED ITEM" : (c.materialCode ?? "NOT RESOLVED"),
         description: c.description,
         manufacturer: c.manufacturer,
         model: c.model,
@@ -26,6 +28,7 @@ export function generateBom(model: EngineeringModel): Bom {
       });
     }
   }
+
 
   const lines = [...map.values()].sort((a, b) => a.materialCode.localeCompare(b.materialCode));
   return {

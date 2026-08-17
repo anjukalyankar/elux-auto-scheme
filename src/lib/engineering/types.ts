@@ -30,15 +30,25 @@ export interface FeederInputs {
   earthFaultSource: string;
   residualVoltageSource: string;
 
-  // Instrument transformers
+  // Instrument transformers — ENGINEERING INPUTS (project data, not material master records)
   phaseCtPrimary: number | null;
   phaseCtSecondary: number | null;
   phaseCtClass: string;
   phaseCtVa: number | null;
   phaseCtQuantity: number | null;
+  /** Knee point voltage (V) — required for PS-class / differential cores. */
+  phaseCtVk?: number | null;
+  /** Secondary winding resistance (ohm) — required for PS-class cores. */
+  phaseCtRct?: number | null;
   cbctPrimary: number | null;
   cbctSecondary: number | null;
+  cbctClass?: string;
+  cbctVa?: number | null;
   vtRatio: string;
+  vtClass?: string;
+  vtVa?: number | null;
+  vtFrequencyHz?: number | null;
+
 
   // Relay
   relayMaterialCode: string;
@@ -106,11 +116,17 @@ export interface MaterialSelector {
   match?: Record<string, unknown>;
   gte?: { attr: string; field: string };
   sortBy?: string;
+  /** When true the selection is only valid if EXACTLY one material matches. */
+  unique?: boolean;
 }
+
+/** Specification kind for engineered (project-specific) instrument transformers. */
+export type EngineeredSpecKind = "PHASE_CT" | "CBCT" | "VT";
 
 export interface RuleAction {
   type:
     | "ADD_COMPONENT"
+    | "ADD_ENGINEERED_ITEM"
     | "ADD_MODEL_NODE"
     | "ENABLE_SECTION"
     | "ADD_CONNECTION_GROUP"
@@ -124,6 +140,8 @@ export interface RuleAction {
   section?: string;
   quantity?: number;
   select?: MaterialSelector;
+  spec?: EngineeredSpecKind;
+  terminalTemplateId?: string;
   nodeType?: string;
   symbolId?: string;
   label?: string;
@@ -132,6 +150,7 @@ export interface RuleAction {
   code?: string;
   message?: string;
 }
+
 
 export interface EngineeringRule {
   id: string;
@@ -204,7 +223,12 @@ export interface ModelComponent {
   properties: Record<string, unknown>;
   ruleCode: string;
   unresolved?: string;
+  /** True for project-engineered items (CT / CBCT / VT) specified by the engineer, not by a material code. */
+  engineered?: boolean;
+  /** Engineering specification captured from project inputs. */
+  spec?: Record<string, unknown>;
 }
+
 
 export interface ModelConnection {
   id: string;

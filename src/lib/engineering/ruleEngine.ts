@@ -14,6 +14,8 @@ import type {
   TerminalTemplate,
 } from "./types";
 import { buildConnections } from "./connections";
+import { buildEngineeredSpec } from "./engineeredItems";
+
 
 /* -------- helpers -------- */
 
@@ -121,6 +123,15 @@ export function selectMaterial(
     }
   }
 
+  if (selector.unique && pool.length > 1) {
+    return {
+      material: null,
+      reason: `ENGINEER REVIEW REQUIRED: ${pool.length} materials match this specification (${pool
+        .map((m) => m.material_code)
+        .join(", ")}). Selection is ambiguous.`,
+    };
+  }
+
   if (selector.sortBy) {
     const key = selector.sortBy;
     pool = [...pool].sort((a, b) => Number(a.attributes?.[key] ?? 0) - Number(b.attributes?.[key] ?? 0));
@@ -128,6 +139,7 @@ export function selectMaterial(
 
   return { material: pool[0] ?? null, reason: pool[0] ? "" : "No matching material" };
 }
+
 
 /* -------- engine -------- */
 
@@ -258,6 +270,53 @@ export function runEngineering(ctx: RunContext): RunResult {
         });
         log.push("Error raised");
         break;
+      case "ADD_ENGINEERED_ITEM": {
+        const section = action.section ?? "GENERAL";
+        sections.add(section);
+        const tag = action.tag ?? "X";
+        const kind = action.spec ?? "PHASE_CT";
+        const { description, spec, missing } = buildEngineeredSpec(kind, inputs);
+
+        for (const field of missing) {
+          issues.push({
+            severity: "ERROR",
+            code: "ENGINEERING_INPUT_REQUIRED",
+            message: `ENGINEER REVIEW REQUIRED: ${tag} (${action.function ?? kind}) — engineering input missing: ${field}.`,
+            source: rule.rule_code,
+          });
+        }
+
+        const template = action.terminalTemplateId
+          ? terminalTemplates.find((t) => t.template_id === action.terminalTemplateId)
+          : undefined;
+
+        components.push({
+          componentId: `${rule.rule_code}:${tag}`,
+          tag,
+          function: action.function ?? "",
+          location: action.location ?? "",
+          section,
+          quantity: action.quantity ?? 1,
+          materialId: null,
+          materialCode: null,
+          description,
+          manufacturer: null,
+          model: null,
+          unit: "NOS",
+          unitPrice: null,
+          symbolId: action.symbolId ?? null,
+          terminalTemplateId: action.terminalTemplateId ?? null,
+          terminals: template?.terminals ?? [],
+          properties: spec,
+          ruleCode: rule.rule_code,
+          engineered: true,
+          spec,
+          ...(missing.length > 0 ? { unresolved: `Missing engineering input: ${missing.join("; ")}` } : {}),
+        });
+        log.push(missing.length === 0 ? `Engineered item ${tag}: ${description}` : `Engineered item ${tag} incomplete`);
+        break;
+      }
+
       case "ADD_COMPONENT": {
         const section = action.section ?? "GENERAL";
         sections.add(section);
