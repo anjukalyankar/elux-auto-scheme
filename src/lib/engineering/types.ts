@@ -223,7 +223,12 @@ export interface ModelComponent {
   properties: Record<string, unknown>;
   ruleCode: string;
   unresolved?: string;
+  /** True for project-engineered items (CT / CBCT / VT) specified by the engineer, not by a material code. */
+  engineered?: boolean;
+  /** Engineering specification captured from project inputs. */
+  spec?: Record<string, unknown>;
 }
+
 
 export interface ModelConnection {
   id: string;
