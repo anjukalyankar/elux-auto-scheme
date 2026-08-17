@@ -270,6 +270,53 @@ export function runEngineering(ctx: RunContext): RunResult {
         });
         log.push("Error raised");
         break;
+      case "ADD_ENGINEERED_ITEM": {
+        const section = action.section ?? "GENERAL";
+        sections.add(section);
+        const tag = action.tag ?? "X";
+        const kind = action.spec ?? "PHASE_CT";
+        const { description, spec, missing } = buildEngineeredSpec(kind, inputs);
+
+        for (const field of missing) {
+          issues.push({
+            severity: "ERROR",
+            code: "ENGINEERING_INPUT_REQUIRED",
+            message: `ENGINEER REVIEW REQUIRED: ${tag} (${action.function ?? kind}) — engineering input missing: ${field}.`,
+            source: rule.rule_code,
+          });
+        }
+
+        const template = action.terminalTemplateId
+          ? terminalTemplates.find((t) => t.template_id === action.terminalTemplateId)
+          : undefined;
+
+        components.push({
+          componentId: `${rule.rule_code}:${tag}`,
+          tag,
+          function: action.function ?? "",
+          location: action.location ?? "",
+          section,
+          quantity: action.quantity ?? 1,
+          materialId: null,
+          materialCode: null,
+          description,
+          manufacturer: null,
+          model: null,
+          unit: "NOS",
+          unitPrice: null,
+          symbolId: action.symbolId ?? null,
+          terminalTemplateId: action.terminalTemplateId ?? null,
+          terminals: template?.terminals ?? [],
+          properties: spec,
+          ruleCode: rule.rule_code,
+          engineered: true,
+          spec,
+          ...(missing.length > 0 ? { unresolved: `Missing engineering input: ${missing.join("; ")}` } : {}),
+        });
+        log.push(missing.length === 0 ? `Engineered item ${tag}: ${description}` : `Engineered item ${tag} incomplete`);
+        break;
+      }
+
       case "ADD_COMPONENT": {
         const section = action.section ?? "GENERAL";
         sections.add(section);
