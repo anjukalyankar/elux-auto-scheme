@@ -14,6 +14,8 @@ import type {
   TerminalTemplate,
 } from "./types";
 import { buildConnections } from "./connections";
+import { buildEngineeredSpec } from "./engineeredItems";
+
 
 /* -------- helpers -------- */
 
