@@ -12,6 +12,7 @@ import { mastersQuery } from "@/lib/masters";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { runFullEngineering, type FeederInputs } from "@/lib/engineering";
+import { missingInstrumentTransformerInputs } from "@/lib/engineering/engineeredItems";
 
 const PROTECTION = ["50", "51", "50N", "51N", "67", "67N", "46", "49", "27", "59", "87", "37", "48", "66"];
 const INDICATIONS = [
@@ -128,6 +129,8 @@ export function DesignWizard({ module }: { module: "NEW_DESIGN" | "EXTENSION" })
     };
   }, [inputs, relays, masters.data]);
 
+  const missingIt = useMemo(() => missingInstrumentTransformerInputs(derived), [derived]);
+
   function set<K extends keyof FeederInputs>(key: K, value: FeederInputs[K]) {
     setInputs((prev) => ({ ...prev, [key]: value }));
   }
@@ -142,6 +145,10 @@ export function DesignWizard({ module }: { module: "NEW_DESIGN" | "EXTENSION" })
     if (!masters.data || !user) return;
     if (!project.name.trim()) {
       toast.error("Engineering input required: project name.");
+      return;
+    }
+    if (missingIt.length > 0) {
+      toast.error(`Engineering input required before generation: ${missingIt.join("; ")}`);
       return;
     }
     setSaving(true);
@@ -196,7 +203,7 @@ export function DesignWizard({ module }: { module: "NEW_DESIGN" | "EXTENSION" })
           <Button variant="outline" onClick={() => setInputs({ ...SAMPLE })}>
             Load 6.6 kV / 800 kW sample
           </Button>
-          <Button onClick={generate} disabled={saving || masters.isLoading}>
+          <Button onClick={generate} disabled={saving || masters.isLoading || missingIt.length > 0}>
             {saving ? "Running rule engine…" : "Run engineering"}
           </Button>
         </>
