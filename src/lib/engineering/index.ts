@@ -30,3 +30,4 @@ export function runFullEngineering(ctx: RunContext): EngineeringRun {
   const validation = buildValidationReport(model, bom, issues);
   return { model, ruleResults, issues, bom, schematic, validation };
 }
+export { missingInstrumentTransformerInputs, ctRequired, cbctRequired, vtRequired, buildEngineeredSpec } from "./engineeredItems";
