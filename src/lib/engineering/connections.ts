@@ -65,12 +65,20 @@ export function buildConnections(model: EngineeringModel): ModelConnection[] {
     add(ct.componentId, "S1", ctTb.componentId, "A", "CT", "Phase CT secondary S1");
     add(ctTb.componentId, "B", ct.componentId, "S2", "CT", "Phase CT secondary return S2");
   }
-  if (ctTb && relay) {
-    add(ctTb.componentId, "A", relay.componentId, "Q1", "CT", "Phase current IL1 to relay");
-    add(relay.componentId, "Q2", ctTb.componentId, "B", "CT", "Phase current IL1 return");
-  } else if (ct && relay) {
-    add(ct.componentId, "S1", relay.componentId, "Q1", "CT", "Phase current IL1 to relay");
-    add(relay.componentId, "Q2", ct.componentId, "S2", "CT", "Phase current IL1 return");
+  const phasePairs: Array<[string, string, string]> = [
+    ["Q1", "Q2", "IL1"],
+    ["Q3", "Q4", "IL2"],
+    ["Q5", "Q6", "IL3"],
+  ];
+  for (const [inT, outT, phase] of phasePairs) {
+    if (relay && !hasTerminal(relay, inT)) continue;
+    if (ctTb && relay) {
+      add(ctTb.componentId, "A", relay.componentId, inT, "CT", `Phase current ${phase} to relay`);
+      add(relay.componentId, outT, ctTb.componentId, "B", "CT", `Phase current ${phase} return`);
+    } else if (ct && relay) {
+      add(ct.componentId, "S1", relay.componentId, inT, "CT", `Phase current ${phase} to relay`);
+      add(relay.componentId, outT, ct.componentId, "S2", "CT", `Phase current ${phase} return`);
+    }
   }
   if (meter && ct && hasTerminal(meter, "I1")) {
     add(ct.componentId, "S1", meter.componentId, "I1", "METERING", "Metering current in");

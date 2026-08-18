@@ -142,7 +142,9 @@ export function generateSchematic(model: EngineeringModel, symbols: SymbolDef[])
         componentId: c.componentId,
         tag: c.tag,
         title: c.tag,
-        subtitle: c.materialCode ?? "UNRESOLVED",
+        subtitle: c.engineered
+          ? ((c.spec?.["ratio"] as string | undefined) ?? "ENGINEERED ITEM")
+          : (c.materialCode ?? "UNRESOLVED"),
         symbolId: c.symbolId,
         symbolType: symbolType(c.symbolId, symbols),
         x,
