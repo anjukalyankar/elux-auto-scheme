@@ -7,6 +7,7 @@ import type { SchematicDoc } from "./schematic";
 
 export * from "./types";
 export { runEngineering, selectMaterial } from "./ruleEngine";
+export type { RunContext } from "./ruleEngine";
 export { generateBom, bomToCsv } from "./bom";
 export { generateSchematic } from "./schematic";
 export { validateBom, validateSchematic, buildValidationReport } from "./validation";
