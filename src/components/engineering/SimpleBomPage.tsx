@@ -18,11 +18,12 @@ export function SimpleBomPage() {
         {masters.data && (
           <SimpleBomGenerator
             context={{
+              inputs: {} as any,
               materials: masters.data.materials,
               rules: masters.data.rules,
               symbols: masters.data.symbols,
               terminalTemplates: masters.data.terminalTemplates,
-              relayDetails: masters.data.relayDetails,
+              project: { name: "Quick BOM", panelNumber: "BOM-01", revision: "0" },
             }}
           />
         )}
